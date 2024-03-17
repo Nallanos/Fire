@@ -11,7 +11,7 @@
 <main class="text-white bg-gray-950 min-h-screen">
   <header class="border-b border-gray-800">
     <div
-      class="flex items-center container mx-auto lg:mx-auto lg:justify-between md: mx-auto md:justify-between min-[450px]:justify-between min-[450px]:mx-auto pr-4"
+      class="flex items-center container mx-auto lg:mx-auto lg:justify-evenly md: mx-auto md:justify-evenly min-[450px]:justify-evenly min-[450px]:mx-auto pr-4 gap-10"
     >
       <a href="/">
         <img src="/Fire.png" alt="Fire logo" class="size-24" />
@@ -29,7 +29,7 @@
     </div>
   </header>
 
-  <div class="container mx-auto px-4">
+  <div>
     <slot />
   </div>
 </main>

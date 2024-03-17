@@ -15,7 +15,7 @@
 
 <form class="flex gap-2 justify-center" on:submit={createAppWithSearchTerm}>
   <div
-    class="flex py-4 items-center border border-gray-800 rounded-md lg:w-[90%] w-[69%] h-[40px] p-4 mb-3"
+    class="flex py-4 items-center border border-gray-800 rounded-md sm:w-[80%] lg:w-[90%] w-[69%] h-[40px] p-4 mb-3"
   >
     <span data-geist-input-prefix=""
       ><svg
@@ -42,8 +42,11 @@
       class="placeholder-gray-500 text-gray-200 px-4 py-2 focus:outline-none bg-red bg-gray-950 w-full h-[30px]"
     />
   </div>
-  <button
-    class=" bg-white rounded-md h-[40px] lg:w-[10%] w-[39%] text-black"
-    type="submit">Add project</button
+  <a
+    href="/apps"
+    class="bg-white rounded-md h-[40px] lg:w-[10%] sm:w-[39%] md:w-[20%] text-black flex items-center justify-center"
+  >
+    <button type="submit" on:click={createAppWithSearchTerm}>Add project</button
+    ></a
   >
 </form>
