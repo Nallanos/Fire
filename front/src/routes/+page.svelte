@@ -47,7 +47,7 @@
       </span>
       <h1 class="text-red-500 text-7xl font-bold font-mono">Done.</h1>
     </div>
-    <p class=" justify-self-start text-lg w-[640px] mr-auto">
+    <p class=" justify-self-start text-lg lg:w-[640px] mr-auto">
       Stay in the flow with instant dev experiences. No more hours
       stashing/pulling/installing locally — just click, and start coding.
     </p>
