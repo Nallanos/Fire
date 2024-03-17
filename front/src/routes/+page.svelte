@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  let texts = ["Deploy Easily.", "Enjoy.", "Code."];
+  let texts = ["Deploy.", "Enjoy.", "Code."];
   let index = 0;
   let currentText = "Code.";
 
