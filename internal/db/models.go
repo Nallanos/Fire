@@ -4,9 +4,22 @@
 
 package db
 
+import (
+	"database/sql"
+	"time"
+)
+
 type Application struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Image string `json:"image"`
 	Port  int64  `json:"port"`
+}
+
+type Deployment struct {
+	ID         string       `json:"id"`
+	AppID      string       `json:"app_id"`
+	Status     string       `json:"status"`
+	CreatedAt  time.Time    `json:"created_at"`
+	FinishedAt sql.NullTime `json:"finished_at"`
 }

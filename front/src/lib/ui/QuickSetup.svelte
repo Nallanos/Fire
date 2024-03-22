@@ -45,5 +45,12 @@
       <h3 class="font-bold">... or clone your code from a repository</h3>
       <Input />
     </div>
+
+    <div
+      class="flex flex-col w-full rounded-md justify-center items-center gap-2 h-28"
+    >
+      <h3 class="font-bold">... or clone your code from a docker directory</h3>
+      <Input />
+    </div>
   </div>
 </main>

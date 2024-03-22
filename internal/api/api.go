@@ -13,12 +13,14 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/nallanos/fire/internal/applications"
 	"github.com/nallanos/fire/internal/db"
+	"github.com/nallanos/fire/internal/deployment"
 )
 
 type API struct {
-	router *chi.Mux
-	apps   *applications.Service
-	docker *client.Client
+	router      *chi.Mux
+	apps        *applications.Service
+	docker      *client.Client
+	deployments *deployment.Service
 }
 
 func NewAPI(docker *client.Client) (*API, error) {
@@ -36,11 +38,13 @@ func NewAPI(docker *client.Client) (*API, error) {
 	}
 
 	appsService := applications.NewService(*db.New(sqliteDb))
+	deploymentsService := deployment.NewService(docker, db.New(sqliteDb))
 
 	api := &API{
-		apps:   appsService,
-		router: r,
-		docker: docker,
+		apps:        appsService,
+		router:      r,
+		docker:      docker,
+		deployments: deploymentsService,
 	}
 
 	r.Get("/health", api.health)

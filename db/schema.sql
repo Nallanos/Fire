@@ -5,6 +5,15 @@ CREATE TABLE applications (
     image text not null,
     port integer not null
 );
+CREATE TABLE deployments (
+    id text primary key not null,
+    app_id text not null,
+    status text not null,
+    created_at timestamp not null,
+    finished_at timestamp,
+    FOREIGN KEY (app_id) REFERENCES applications(id) ON DELETE CASCADE
+);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
-  ('20240208190923');
+  ('20240208190923'),
+  ('20240320193040');
