@@ -74,3 +74,51 @@ export async function deleteApp(id: string) {
     console.error(err);
   }
 }
+
+export async function deployApp(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/deploy`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  try {
+    const res = await fetch(req);
+    console.log(res.status);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function stopContainer(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/stop`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  try {
+    const res = await fetch(req);
+    console.log(res.status);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getDeployment(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/deployment`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const res = await fetch(req);
+  
+  const data = await res.json();
+  return data;
+}

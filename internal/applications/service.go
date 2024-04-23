@@ -29,11 +29,9 @@ func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOp
 			ID:   cuid2.Generate(),
 			Name: app.Name,
 		})
-
 	if err != nil {
 		return nil, err
 	}
-
 	return &application, nil
 }
 

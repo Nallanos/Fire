@@ -19,7 +19,6 @@ func (a *API) createApp(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-
 	app, err := a.apps.CreateApplication(context.Background(), body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

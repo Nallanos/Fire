@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
 )
 
 func AnswerJson(w http.ResponseWriter, data interface{}, status int) {
@@ -26,3 +27,4 @@ func BadRequest(w http.ResponseWriter, err error) {
 func InternalServerError(w http.ResponseWriter, err error) {
 	AnswerJson(w, map[string]string{"error": err.Error()}, http.StatusInternalServerError)
 }
+

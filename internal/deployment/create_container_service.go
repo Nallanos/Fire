@@ -9,20 +9,19 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/nallanos/fire/internal/db"
 	"github.com/nrednav/cuid2"
 )
 
-type Service struct {
+type ContainerService struct {
 	docker *client.Client
 	db     *db.Queries
 }
 
-func NewService(docker *client.Client, db *db.Queries) *Service {
-	return &Service{
+func NewService(docker *client.Client, db *db.Queries) *ContainerService {
+	return &ContainerService{
 		docker: docker,
 		db:     db,
 	}
@@ -36,7 +35,7 @@ const (
 	StatusCompleted Status = "completed"
 )
 
-func (s *Service) DeployApplication(app *db.Application) error {
+func (s *ContainerService) Deploy(app *db.Application) error {
 	deployment, err := s.db.CreateDeployment(context.Background(), db.CreateDeploymentParams{
 		AppID:  app.ID,
 		ID:     cuid2.Generate(),
@@ -55,10 +54,9 @@ func (s *Service) DeployApplication(app *db.Application) error {
 		}
 	}()
 
-	containers, err := s.docker.ContainerList(context.Background(), types.ContainerListOptions{
-		Filters: filters.NewArgs(filters.Arg("label", "app_id="+app.ID)),
-	})
+	containers, err := s.ListApplicationContainers(context.Background(), app.ID)
 	if err != nil {
+		slog.Error("error listing container")
 		return fmt.Errorf("error listing containers: %w", err)
 	}
 
@@ -72,13 +70,12 @@ func (s *Service) DeployApplication(app *db.Application) error {
 		}
 	}
 
-	reader, err := s.docker.ImagePull(context.Background(), app.Image, types.ImagePullOptions{})
+	reader, err := s.docker.ImagePull(context.Background(), "docker.io/library/docker", types.ImagePullOptions{})
 	if err != nil {
-		slog.Error("Error pulling image", "err", err)
+		slog.Error("error pulling image")
 		return fmt.Errorf("error pulling image: %w", err)
 	}
 
-	slog.Info("Copying image pull output")
 	if _, err := io.Copy(os.Stdout, reader); err != nil {
 		return fmt.Errorf("error downloading image : %w", err)
 	}
@@ -88,7 +85,7 @@ func (s *Service) DeployApplication(app *db.Application) error {
 			Labels: map[string]string{
 				"app_id": app.ID,
 			},
-			Image: app.Image,
+			Image: "docker.io/library/nginx:latest",
 		},
 		&container.HostConfig{
 			PortBindings: nat.PortMap{
@@ -99,17 +96,12 @@ func (s *Service) DeployApplication(app *db.Application) error {
 					},
 				},
 			},
-		}, nil, nil, app.ID)
+		}, nil, nil, deployment.ID)
 	if err != nil {
+		slog.Error("error creating container", err)
 		return fmt.Errorf("error creating container: %w", err)
 	}
-
-	slog.Info("Starting container", "id", container.ID)
-	err = s.docker.ContainerStart(context.Background(), container.ID, types.ContainerStartOptions{})
-	if err != nil {
-		slog.Error("Error starting container", "err", err)
-		return fmt.Errorf("error starting container: %w", err)
-	}
+	slog.Info("Creating container", "id", container.ID)
 
 	if err := s.db.UpdateDeployment(context.Background(), db.UpdateDeploymentParams{
 		ID:     deployment.ID,

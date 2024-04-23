@@ -20,7 +20,7 @@ type API struct {
 	router      *chi.Mux
 	apps        *applications.Service
 	docker      *client.Client
-	deployments *deployment.Service
+	deployments *deployment.ContainerService
 }
 
 func NewAPI(docker *client.Client) (*API, error) {
@@ -48,9 +48,17 @@ func NewAPI(docker *client.Client) (*API, error) {
 	}
 
 	r.Get("/health", api.health)
+
 	r.Post("/apps", api.createApp)
 	r.Get("/apps", api.listApps)
 	r.Get("/apps/{id}", api.getApp)
+
+	r.Get("/apps/{id}/deployment", api.getDeployment)
+
+	r.Post("/apps/{id}/deploy", api.deployApp)
+
+	r.Post("/apps/{id}/start", api.startContainer)
+	r.Post("/apps/{id}/stop", api.stopContainer)
 	r.Delete("/apps/{id}", api.deleteApp)
 	return api, nil
 }
