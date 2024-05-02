@@ -25,5 +25,4 @@ func (a *API) stopContainer(w http.ResponseWriter, r *http.Request) {
 		InternalServerError(w, err)
 		return
 	}
-	AnswerJson(w, nil, http.StatusOK)
 }

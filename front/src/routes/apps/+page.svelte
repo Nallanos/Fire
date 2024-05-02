@@ -10,12 +10,11 @@
   let displayedApps: App[] = [];
 
   onMount(async () => {
-    const initialApps = await listApps();
+    const initialApps: App[] = await listApps();
     apps.set(initialApps);
 
     apps.subscribe((val: App[]) => {
       displayedApps = val;
-
       inputValue.subscribe((inputVal: string) => {
         let modifiedVal = inputVal.toLowerCase().replace(/\s/g, "");
         if (inputVal === "" || inputVal === null || inputVal === undefined) {

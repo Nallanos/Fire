@@ -10,16 +10,17 @@ import (
 )
 
 const createApplication = `-- name: CreateApplication :one
-INSERT INTO applications (id, name, image, port)
-VALUES (?, ?, ?, ?)
-RETURNING id, name, image, port
+INSERT INTO applications (id, name, image, port, status)
+VALUES (?, ?, ?, ?, ?)
+RETURNING id, name, status, image, port
 `
 
 type CreateApplicationParams struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Port  int64  `json:"port"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Image  string `json:"image"`
+	Port   int64  `json:"port"`
+	Status string `json:"status"`
 }
 
 func (q *Queries) CreateApplication(ctx context.Context, arg CreateApplicationParams) (Application, error) {
@@ -28,11 +29,13 @@ func (q *Queries) CreateApplication(ctx context.Context, arg CreateApplicationPa
 		arg.Name,
 		arg.Image,
 		arg.Port,
+		arg.Status,
 	)
 	var i Application
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Status,
 		&i.Image,
 		&i.Port,
 	)
@@ -49,7 +52,7 @@ func (q *Queries) DeleteApplication(ctx context.Context, id string) error {
 }
 
 const getApplication = `-- name: GetApplication :one
-SELECT id, name, image, port FROM applications WHERE id = ? LIMIT 1
+SELECT id, name, status, image, port FROM applications WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetApplication(ctx context.Context, id string) (Application, error) {
@@ -58,6 +61,7 @@ func (q *Queries) GetApplication(ctx context.Context, id string) (Application, e
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Status,
 		&i.Image,
 		&i.Port,
 	)
@@ -65,7 +69,7 @@ func (q *Queries) GetApplication(ctx context.Context, id string) (Application, e
 }
 
 const listApplications = `-- name: ListApplications :many
-SELECT id, name, image, port FROM applications
+SELECT id, name, status, image, port FROM applications
 `
 
 func (q *Queries) ListApplications(ctx context.Context) ([]Application, error) {
@@ -80,6 +84,7 @@ func (q *Queries) ListApplications(ctx context.Context) ([]Application, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.Status,
 			&i.Image,
 			&i.Port,
 		); err != nil {
@@ -96,33 +101,27 @@ func (q *Queries) ListApplications(ctx context.Context) ([]Application, error) {
 	return items, nil
 }
 
-const updateApplication = `-- name: UpdateApplication :one
+const updateApplication = `-- name: UpdateApplication :exec
 UPDATE applications
-SET name = ?, image = ?, port = ?
+SET name = ?, image = ?, port = ?, status = ?
 WHERE id = ?
-RETURNING id, name, image, port
 `
 
 type UpdateApplicationParams struct {
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Port  int64  `json:"port"`
-	ID    string `json:"id"`
+	Name   string `json:"name"`
+	Image  string `json:"image"`
+	Port   int64  `json:"port"`
+	Status string `json:"status"`
+	ID     string `json:"id"`
 }
 
-func (q *Queries) UpdateApplication(ctx context.Context, arg UpdateApplicationParams) (Application, error) {
-	row := q.db.QueryRowContext(ctx, updateApplication,
+func (q *Queries) UpdateApplication(ctx context.Context, arg UpdateApplicationParams) error {
+	_, err := q.db.ExecContext(ctx, updateApplication,
 		arg.Name,
 		arg.Image,
 		arg.Port,
+		arg.Status,
 		arg.ID,
 	)
-	var i Application
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Image,
-		&i.Port,
-	)
-	return i, err
+	return err
 }

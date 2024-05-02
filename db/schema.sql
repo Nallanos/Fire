@@ -1,7 +1,8 @@
-CREATE TABLE IF NOT EXISTS "schema_migrations" (version varchar(255) primary key);
+CREATE TABLE IF NOT EXISTS "schema_migrations" (version varchar(128) primary key);
 CREATE TABLE applications (
     id text primary key not null,
     name text not null,
+    status text not null,
     image text not null,
     port integer not null
 );

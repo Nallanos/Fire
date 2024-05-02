@@ -6,15 +6,14 @@ SELECT * FROM applications WHERE id = ? LIMIT 1;
 
 
 -- name: CreateApplication :one
-INSERT INTO applications (id, name, image, port)
-VALUES (?, ?, ?, ?)
+INSERT INTO applications (id, name, image, port, status)
+VALUES (?, ?, ?, ?, ?)
 RETURNING *;
 
--- name: UpdateApplication :one
+-- name: UpdateApplication :exec
 UPDATE applications
-SET name = ?, image = ?, port = ?
-WHERE id = ?
-RETURNING *;
+SET name = ?, image = ?, port = ?, status = ?
+WHERE id = ?;
 
 -- name: DeleteApplication :exec
 DELETE FROM applications WHERE id = ?;

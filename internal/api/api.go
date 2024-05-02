@@ -36,9 +36,9 @@ func NewAPI(docker *client.Client) (*API, error) {
 		slog.Error("Error opening database", err)
 		return nil, err
 	}
-
-	appsService := applications.NewService(*db.New(sqliteDb))
-	deploymentsService := deployment.NewService(docker, db.New(sqliteDb))
+	queries := db.New(sqliteDb)
+	deploymentsService := deployment.NewService(docker, queries)
+	appsService := applications.NewService(queries, deploymentsService)
 
 	api := &API{
 		apps:        appsService,
@@ -53,11 +53,8 @@ func NewAPI(docker *client.Client) (*API, error) {
 	r.Get("/apps", api.listApps)
 	r.Get("/apps/{id}", api.getApp)
 
-	r.Get("/apps/{id}/deployment", api.getDeployment)
-
 	r.Post("/apps/{id}/deploy", api.deployApp)
 
-	r.Post("/apps/{id}/start", api.startContainer)
 	r.Post("/apps/{id}/stop", api.stopContainer)
 	r.Delete("/apps/{id}", api.deleteApp)
 	return api, nil

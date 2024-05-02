@@ -10,10 +10,11 @@ import (
 )
 
 type Application struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Port  int64  `json:"port"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
+	Image  string `json:"image"`
+	Port   int64  `json:"port"`
 }
 
 type Deployment struct {

@@ -35,12 +35,15 @@ func (q *Queries) CreateDeployment(ctx context.Context, arg CreateDeploymentPara
 	return i, err
 }
 
-const getDeployment = `-- name: GetDeployment :one
-SELECT id, app_id, status, created_at, finished_at FROM deployments WHERE app_id = ? LIMIT 1
+const getLatestDeployment = `-- name: GetLatestDeployment :one
+SELECT id, app_id, status, created_at, finished_at FROM deployments
+WHERE app_id = ?
+ORDER BY created_at DESC
+LIMIT 1
 `
 
-func (q *Queries) GetDeployment(ctx context.Context, appID string) (Deployment, error) {
-	row := q.db.QueryRowContext(ctx, getDeployment, appID)
+func (q *Queries) GetLatestDeployment(ctx context.Context, appID string) (Deployment, error) {
+	row := q.db.QueryRowContext(ctx, getLatestDeployment, appID)
 	var i Deployment
 	err := row.Scan(
 		&i.ID,
@@ -52,19 +55,52 @@ func (q *Queries) GetDeployment(ctx context.Context, appID string) (Deployment, 
 	return i, err
 }
 
+const listApplicationDeployments = `-- name: ListApplicationDeployments :many
+SELECT id, app_id, status, created_at, finished_at FROM deployments WHERE app_id = ?
+`
+
+func (q *Queries) ListApplicationDeployments(ctx context.Context, appID string) ([]Deployment, error) {
+	rows, err := q.db.QueryContext(ctx, listApplicationDeployments, appID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Deployment
+	for rows.Next() {
+		var i Deployment
+		if err := rows.Scan(
+			&i.ID,
+			&i.AppID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.FinishedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateDeployment = `-- name: UpdateDeployment :exec
 UPDATE deployments
     SET status = ?, finished_at = ?
-    WHERE id = ?
+    WHERE app_id = ?
 `
 
 type UpdateDeploymentParams struct {
 	Status     string       `json:"status"`
 	FinishedAt sql.NullTime `json:"finished_at"`
-	ID         string       `json:"id"`
+	AppID      string       `json:"app_id"`
 }
 
 func (q *Queries) UpdateDeployment(ctx context.Context, arg UpdateDeploymentParams) error {
-	_, err := q.db.ExecContext(ctx, updateDeployment, arg.Status, arg.FinishedAt, arg.ID)
+	_, err := q.db.ExecContext(ctx, updateDeployment, arg.Status, arg.FinishedAt, arg.AppID)
 	return err
 }

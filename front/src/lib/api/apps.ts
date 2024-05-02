@@ -5,8 +5,15 @@ export type App = {
   name: string;
   image: string;
   port: number;
+  status: string;
 };
-
+export type Deployment = {
+  ID: string;
+  AppID: string;
+  status: string;
+  CreatedAt: number;
+  FinishedAt: number;
+};
 type CreateAppPayload = {
   name: string;
 };
@@ -84,7 +91,7 @@ export async function deployApp(id: string) {
   });
   try {
     const res = await fetch(req);
-    console.log(res.status);
+    console.log("application deployed", res.status);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -103,22 +110,8 @@ export async function stopContainer(id: string) {
   });
   try {
     const res = await fetch(req);
-    console.log(res.status);
+    console.log("application stopped", res.status);
   } catch (err) {
     console.error(err);
   }
-}
-
-export async function getDeployment(id: string) {
-  const req = new Request(API_URL + `/apps/${id}/deployment`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const res = await fetch(req);
-  
-  const data = await res.json();
-  return data;
 }

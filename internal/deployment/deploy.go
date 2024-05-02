@@ -30,16 +30,17 @@ func NewService(docker *client.Client, db *db.Queries) *ContainerService {
 type Status = string
 
 const (
-	StatusStarded   Status = "started"
+	StatusPending   Status = "pending"
 	StatusFailed    Status = "failed"
 	StatusCompleted Status = "completed"
+	StatusInactive  Status = "inactive"
 )
 
 func (s *ContainerService) Deploy(app *db.Application) error {
 	deployment, err := s.db.CreateDeployment(context.Background(), db.CreateDeploymentParams{
+		Status: StatusPending,
 		AppID:  app.ID,
 		ID:     cuid2.Generate(),
-		Status: StatusStarded,
 	})
 	if err != nil {
 		return fmt.Errorf("error creating deployment in db: %w", err)
@@ -48,7 +49,6 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 	defer func() {
 		if err != nil {
 			s.db.UpdateDeployment(context.Background(), db.UpdateDeploymentParams{
-				ID:     deployment.ID,
 				Status: StatusFailed,
 			})
 		}
@@ -56,7 +56,6 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 
 	containers, err := s.ListApplicationContainers(context.Background(), app.ID)
 	if err != nil {
-		slog.Error("error listing container")
 		return fmt.Errorf("error listing containers: %w", err)
 	}
 
@@ -65,7 +64,7 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 			return fmt.Errorf("error stopping container: %w", err)
 		}
 
-		if err := s.docker.ContainerRemove(context.Background(), c.ID, types.ContainerRemoveOptions{}); err != nil {
+		if err := s.docker.ContainerRemove(context.Background(), c.ID, container.RemoveOptions{}); err != nil {
 			return fmt.Errorf("error removing container: %w", err)
 		}
 	}
@@ -98,15 +97,25 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 			},
 		}, nil, nil, deployment.ID)
 	if err != nil {
-		slog.Error("error creating container", err)
 		return fmt.Errorf("error creating container: %w", err)
 	}
-	slog.Info("Creating container", "id", container.ID)
+	slog.Info("container created", "id", container.ID)
 
-	if err := s.db.UpdateDeployment(context.Background(), db.UpdateDeploymentParams{
-		ID:     deployment.ID,
+	err = s.StartContainer(app)
+
+	if err != nil {
+		return fmt.Errorf("error creating container: %w", err)
+	}
+
+	err = s.db.UpdateApplication(context.Background(), db.UpdateApplicationParams{
+		ID:     app.ID,
+		Image:  app.Image,
+		Port:   app.Port,
+		Name:   app.Name,
 		Status: StatusCompleted,
-	}); err != nil {
+	})
+
+	if err != nil {
 		return fmt.Errorf("error updating deployment in db: %w", err)
 	}
 

@@ -2,20 +2,23 @@ package applications
 
 import (
 	"context"
-	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/nallanos/fire/internal/db"
+	"github.com/nallanos/fire/internal/deployment"
 	"github.com/nrednav/cuid2"
 )
 
 type Service struct {
-	db db.Queries
+	db         *db.Queries
+	deployment *deployment.ContainerService
 }
 
-func NewService(db db.Queries) *Service {
+func NewService(db *db.Queries, s *deployment.ContainerService) *Service {
 	return &Service{
-		db: db,
+		db:         db,
+		deployment: s,
 	}
 }
 
@@ -26,11 +29,12 @@ type CreateApplicationOptions struct {
 func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOptions) (*db.Application, error) {
 	application, err := s.db.CreateApplication(ctx,
 		db.CreateApplicationParams{
-			ID:   cuid2.Generate(),
-			Name: app.Name,
+			ID:     cuid2.Generate(),
+			Name:   app.Name,
+			Status: "inactive",
 		})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while creating application: %w", err)
 	}
 	return &application, nil
 }
@@ -38,7 +42,7 @@ func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOp
 func (s *Service) ListApplications(ctx context.Context) ([]db.Application, error) {
 	applications, err := s.db.ListApplications(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while listing applications: %w", err)
 	}
 
 	return applications, nil
@@ -49,10 +53,7 @@ var ErrApplicationNotFound = errors.New("application not found")
 func (s *Service) GetApplication(ctx context.Context, id string) (*db.Application, error) {
 	application, err := s.db.GetApplication(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, ErrApplicationNotFound
-		}
-		return nil, err
+		return nil, fmt.Errorf("error while getting application: %w", err)
 	}
 
 	return &application, nil
@@ -60,7 +61,22 @@ func (s *Service) GetApplication(ctx context.Context, id string) (*db.Applicatio
 func (s *Service) DeleteApplication(ctx context.Context, id string) error {
 	err := s.db.DeleteApplication(ctx, id)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while deleting application: %w", err)
+	}
+	return nil
+}
+
+func (s *Service) UpdateAppStatus(ctx context.Context, id string) error {
+	deployment, err := s.deployment.GetLatestDeployment(ctx, id)
+	if err != nil {
+		return fmt.Errorf("error getting the latest deployment of the application: %w", err)
+	}
+	err = s.db.UpdateApplication(ctx, db.UpdateApplicationParams{
+		ID:     id,
+		Status: deployment.Status,
+	})
+	if err != nil {
+		return fmt.Errorf("error getting the latest deployment of the application: %w", err)
 	}
 	return nil
 }

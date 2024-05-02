@@ -11,18 +11,17 @@
   import { fade } from "svelte/transition";
   let app: App;
 
+  let style = "bg-white";
+  let buttonText = "";
+  let visible = false;
+
   async function deletingApplication() {
     deleteApp($page.params?.id);
   }
 
-  let status = "Deploy";
-  let style = "bg-white";
-  let visible = false;
-
   async function deployingApplication() {
     await deployApp($page.params?.id).then(
       () => {
-        status = "Stop";
         style = "bg-white";
         visible = true;
         setTimeout(() => {
@@ -34,23 +33,39 @@
         setTimeout(() => {
           visible = false;
         }, 2000);
-        status = "Failed";
         style = "bg-red-400";
       }
     );
   }
 
+  async function refreshApp() {
+    app = await getApp($page.params?.id);
+  }
+  function refreshButtonText() {
+    refreshApp().finally(() => {
+      if (app.status == "inactive") {
+        buttonText = "Deploy";
+      } else if (app.status == "completed" || "pending") {
+        buttonText = "Stop";
+      }
+    });
+  }
+
   async function DeployAndStopButtonHandler() {
-    if (status == "Deploy") {
-      deployingApplication();
-    } else if (status == "Stop") {
+    if (app.status == "inactive") {
+      await deployingApplication().finally(() => {
+        refreshButtonText();
+      });
+    }
+    if (app.status == "completed" || app.status == "error") {
       await stopContainer($page.params?.id).finally(() => {
-        status = "Deploy";
+        refreshButtonText();
       });
     }
   }
   onMount(async () => {
     app = await getApp($page.params?.id);
+    refreshButtonText();
   });
 </script>
 
@@ -72,7 +87,7 @@
       <button
         on:click={DeployAndStopButtonHandler}
         class={`${style} border rounded-md border-gray-800 w-[80px] h-[40px] py-10px text-black`}
-        >{status}</button
+        >{buttonText}</button
       >
       <button
         class="border rounded-md border-gray-800 w-[80px] h-[40px] py-10px"

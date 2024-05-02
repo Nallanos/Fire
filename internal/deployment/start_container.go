@@ -3,7 +3,6 @@ package deployment
 import (
 	"context"
 	"fmt"
-	"log/slog"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/nallanos/fire/internal/db"
@@ -16,8 +15,16 @@ func (s *ContainerService) StartContainer(app *db.Application) error {
 	}
 	err = s.docker.ContainerStart(context.Background(), containers[0].ID, container.StartOptions{})
 	if err != nil {
-		slog.Error("Error starting container", "err", err)
+		s.db.UpdateDeployment(context.Background(), db.UpdateDeploymentParams{
+			Status: StatusFailed,
+		})
 		return fmt.Errorf("error starting container: %w", err)
+	}
+	err = s.db.UpdateDeployment(context.Background(), db.UpdateDeploymentParams{
+		Status: StatusCompleted,
+	})
+	if err != nil {
+		return fmt.Errorf("error updating deployment: %w", err)
 	}
 	return nil
 }

@@ -6,7 +6,13 @@ INSERT INTO deployments (id, app_id, status, created_at)
 -- name: UpdateDeployment :exec
 UPDATE deployments
     SET status = ?, finished_at = ?
-    WHERE id = ?;
+    WHERE app_id = ?;
 
--- name: GetDeployment :one
-SELECT * FROM deployments WHERE app_id = ? LIMIT 1;
+-- name: GetLatestDeployment :one
+SELECT * FROM deployments
+WHERE app_id = ?
+ORDER BY created_at DESC
+LIMIT 1;
+
+-- name: ListApplicationDeployments :many
+SELECT * FROM deployments WHERE app_id = ?;
