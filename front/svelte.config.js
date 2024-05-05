@@ -15,6 +15,9 @@ const config = {
     files: {
       lib: "src/lib",
     },
+    alias: {
+      types: ".svelte-kit/types",
+    },
   },
 };
 

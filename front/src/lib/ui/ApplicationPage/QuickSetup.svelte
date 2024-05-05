@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { type App, getApp } from "$lib/api";
   import { page } from "$app/stores";
-  import Input from "./Input.svelte";
+  import Input from "../Input.svelte";
 
   let app: App;
   onMount(async () => {

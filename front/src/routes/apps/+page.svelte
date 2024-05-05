@@ -1,12 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { writable } from "svelte/store";
   import Input from "$lib/ui/Apps-input.svelte";
   import Card from "$lib/ui/Card.svelte";
   import { listApps, type App } from "$lib/api";
-  import { inputValue } from "$lib/store";
-
-  let apps = writable<App[]>([]);
+  import { inputValue, apps } from "$lib/store";
   let displayedApps: App[] = [];
 
   onMount(async () => {

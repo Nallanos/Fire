@@ -65,18 +65,3 @@ func (s *Service) DeleteApplication(ctx context.Context, id string) error {
 	}
 	return nil
 }
-
-func (s *Service) UpdateAppStatus(ctx context.Context, id string) error {
-	deployment, err := s.deployment.GetLatestDeployment(ctx, id)
-	if err != nil {
-		return fmt.Errorf("error getting the latest deployment of the application: %w", err)
-	}
-	err = s.db.UpdateApplication(ctx, db.UpdateApplicationParams{
-		ID:     id,
-		Status: deployment.Status,
-	})
-	if err != nil {
-		return fmt.Errorf("error getting the latest deployment of the application: %w", err)
-	}
-	return nil
-}

@@ -2,7 +2,6 @@
   export let status: string;
   let backgroundColor = "bg-[#262f3b]";
   let iconColor = "bg-[#9ca3af]";
-  console.log(status);
   $: {
     switch (status) {
       case "completed":

@@ -1,22 +1,20 @@
 <script lang="ts">
-  import { createApp, deployApp } from "$lib/api/apps";
-  import { inputValue } from "$lib/store";
-
+  import type { App } from "./../api/apps";
+  import { createApp } from "$lib/api/apps";
+  import { inputValue, apps } from "$lib/store";
   let val = "";
   const updateVal = (event: Event) => {
     let inputElement = event.target as HTMLInputElement;
     val = inputElement.value;
     inputValue.set(val);
   };
-  async function createAppWithSearchTermAndDeployIt() {
-    await createApp({ name: val });
+  async function createAppWithSearchTerm() {
+    const newApp: App = await createApp({ name: val });
+    apps.update((currentApps) => [...currentApps, newApp]);
   }
 </script>
 
-<form
-  class="flex gap-2 justify-center"
-  on:submit={createAppWithSearchTermAndDeployIt}
->
+<form class="flex gap-2 justify-center" on:submit={createAppWithSearchTerm}>
   <div
     class="flex py-4 items-center border border-gray-800 rounded-md sm:w-[80%] lg:w-[90%] w-[69%] h-[40px] p-4 mb-3"
   >
@@ -49,8 +47,7 @@
     href="/apps"
     class="bg-white rounded-md h-[40px] lg:w-[10%] sm:w-[39%] md:w-[20%] text-black flex items-center justify-center"
   >
-    <button type="submit" on:click={createAppWithSearchTermAndDeployIt}
-      >Add project</button
+    <button type="submit" on:click={createAppWithSearchTerm}>Add project</button
     ></a
   >
 </form>

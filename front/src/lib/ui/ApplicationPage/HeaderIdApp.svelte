@@ -16,7 +16,8 @@
   let visible = false;
 
   async function deletingApplication() {
-    deleteApp($page.params?.id);
+    await deleteApp($page.params?.id);
+    window.location.href = "/apps";
   }
 
   async function deployingApplication() {
@@ -69,9 +70,9 @@
   });
 </script>
 
-<header class="flex border-b border-gray-800 py-4 px-4">
+<header class="flex">
   <div
-    class="bg-gray-950 rounded-lg p-6 flex justify-between items-center w-full container mx-auto"
+    class="bg-gray-950 rounded-lg py-6 flex justify-between items-center w-full container mx-auto"
   >
     <h1 class="text-2xl font-bold">{app?.name}</h1>
 
@@ -93,14 +94,12 @@
         class="border rounded-md border-gray-800 w-[80px] h-[40px] py-10px"
         >Domain</button
       >
-      <a href="/apps">
-        <button
-          class="bg-red-600 rounded-md w-[118px] h-[40px] py-10px"
-          on:click={deletingApplication}
-        >
-          Delete
-        </button>
-      </a>
+      <button
+        class="bg-red-600 rounded-md w-[118px] h-[40px] py-10px"
+        on:click={deletingApplication}
+      >
+        Delete
+      </button>
     </ul>
   </div>
 </header>

@@ -7,12 +7,16 @@ export type App = {
   port: number;
   status: string;
 };
+export type finished_at = {
+  Time: string;
+  Valid: boolean;
+};
 export type Deployment = {
-  ID: string;
-  AppID: string;
+  id: string;
+  app_id: string;
   status: string;
-  CreatedAt: number;
-  FinishedAt: number;
+  created_at: string;
+  finished_at: finished_at;
 };
 type CreateAppPayload = {
   name: string;
@@ -113,5 +117,37 @@ export async function stopContainer(id: string) {
     console.log("application stopped", res.status);
   } catch (err) {
     console.error(err);
+    throw err;
+  }
+}
+
+export async function listDeployment() {
+  const req = new Request(API_URL + "/apps/deployment", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const res = await fetch(req);
+  const data = await res.json();
+  console.log(data);
+  return data;
+}
+
+export async function getActiveDeployment(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/deployment/activeDeployment`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  try {
+    const res = await fetch(req);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    throw err;
   }
 }

@@ -53,6 +53,8 @@ func NewAPI(docker *client.Client) (*API, error) {
 	r.Get("/apps", api.listApps)
 	r.Get("/apps/{id}", api.getApp)
 
+	r.Get("/apps/{id}/deployment/activeDeployment", api.getActiveDeployment)
+
 	r.Post("/apps/{id}/deploy", api.deployApp)
 
 	r.Post("/apps/{id}/stop", api.stopContainer)
