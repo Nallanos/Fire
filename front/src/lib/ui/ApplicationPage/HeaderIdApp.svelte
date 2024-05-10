@@ -12,7 +12,7 @@
   let app: App;
 
   let style = "bg-white";
-  let buttonText = "";
+  let buttonText: string;
   let visible = false;
 
   async function deletingApplication() {
@@ -42,32 +42,34 @@
   async function refreshApp() {
     app = await getApp($page.params?.id);
   }
-  function refreshButtonText() {
-    refreshApp().finally(() => {
-      if (app.status == "inactive") {
-        buttonText = "Deploy";
-      } else if (app.status == "completed" || "pending") {
-        buttonText = "Stop";
-      }
-    });
-  }
-
-  async function DeployAndStopButtonHandler() {
+  async function DeployAndStopButtonHandler(): Promise<void> {
     if (app.status == "inactive") {
       await deployingApplication().finally(() => {
         refreshButtonText();
       });
-    }
-    if (app.status == "completed" || app.status == "error") {
+    } else {
       await stopContainer($page.params?.id).finally(() => {
         refreshButtonText();
       });
     }
   }
+
+  async function refreshButtonText(): Promise<void> {
+    await refreshApp().finally(() => {
+      console.log(app);
+      if (app.status == "inactive") {
+        buttonText = "Deploy";
+        console.log("the status of app is inactive");
+      } else if (app.status == "completed" || app.status == "pending") {
+        buttonText = "Stop";
+        console.log("the status of app is completed", buttonText);
+      }
+    });
+  }
   onMount(async () => {
     app = await getApp($page.params?.id);
-    refreshButtonText();
   });
+  refreshButtonText();
 </script>
 
 <header class="flex">
@@ -89,10 +91,6 @@
         on:click={DeployAndStopButtonHandler}
         class={`${style} border rounded-md border-gray-800 w-[80px] h-[40px] py-10px text-black`}
         >{buttonText}</button
-      >
-      <button
-        class="border rounded-md border-gray-800 w-[80px] h-[40px] py-10px"
-        >Domain</button
       >
       <button
         class="bg-red-600 rounded-md w-[118px] h-[40px] py-10px"

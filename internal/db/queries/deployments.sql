@@ -16,3 +16,8 @@ LIMIT 1;
 
 -- name: ListApplicationDeployments :many
 SELECT * FROM deployments WHERE app_id = ?;
+
+-- name: GetDeploymentById :one
+SELECT * FROM deployments
+WHERE id = ?
+LIMIT 1;

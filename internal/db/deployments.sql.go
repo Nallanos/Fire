@@ -35,6 +35,25 @@ func (q *Queries) CreateDeployment(ctx context.Context, arg CreateDeploymentPara
 	return i, err
 }
 
+const getDeploymentById = `-- name: GetDeploymentById :one
+SELECT id, app_id, status, created_at, finished_at FROM deployments
+WHERE id = ?
+LIMIT 1
+`
+
+func (q *Queries) GetDeploymentById(ctx context.Context, id string) (Deployment, error) {
+	row := q.db.QueryRowContext(ctx, getDeploymentById, id)
+	var i Deployment
+	err := row.Scan(
+		&i.ID,
+		&i.AppID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.FinishedAt,
+	)
+	return i, err
+}
+
 const getLatestDeployment = `-- name: GetLatestDeployment :one
 SELECT id, app_id, status, created_at, finished_at FROM deployments
 WHERE app_id = ?

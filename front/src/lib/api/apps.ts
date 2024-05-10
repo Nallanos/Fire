@@ -121,8 +121,8 @@ export async function stopContainer(id: string) {
   }
 }
 
-export async function listDeployment() {
-  const req = new Request(API_URL + "/apps/deployment", {
+export async function listDeployments(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/deployment`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -131,7 +131,6 @@ export async function listDeployment() {
 
   const res = await fetch(req);
   const data = await res.json();
-  console.log(data);
   return data;
 }
 
@@ -142,6 +141,41 @@ export async function getActiveDeployment(id: string) {
       "Content-Type": "application/json",
     },
   });
+
+  try {
+    const res = await fetch(req);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    throw err;
+  }
+}
+export async function StartContainer(id: string) {
+  const req = new Request(API_URL + `/apps/${id}/start`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  try {
+    const res = await fetch(req);
+    console.log("application started", res.status);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getDeployment(id: string, deploymentId: string) {
+  const req = new Request(
+    API_URL + `/apps/${id}/getDeployment/${deploymentId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   try {
     const res = await fetch(req);

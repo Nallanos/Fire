@@ -11,7 +11,7 @@ import (
 func (c *ContainerService) ListApplicationContainers(ctx context.Context, appId string) ([]types.Container, error) {
 	containers, err := c.docker.ContainerList(ctx, container.ListOptions{
 		Filters: filters.NewArgs(filters.Arg("label", "app_id="+appId)),
-		All: true,
+		All:     true,
 	})
 	if err != nil {
 		return nil, err

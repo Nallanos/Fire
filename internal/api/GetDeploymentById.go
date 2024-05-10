@@ -10,10 +10,10 @@ import (
 	"github.com/nallanos/fire/internal/applications"
 )
 
-func (a *API) getActiveDeployment(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+func (a *API) GetDeploymentById(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "deploymentid")
 
-	deployment, err := a.deployments.GetLatestDeployment(context.Background(), id)
+	deployment, err := a.deployments.GetDeploymentById(context.Background(), id)
 
 	if err != nil {
 		if err == applications.ErrApplicationNotFound {

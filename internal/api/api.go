@@ -51,13 +51,17 @@ func NewAPI(docker *client.Client) (*API, error) {
 
 	r.Post("/apps", api.createApp)
 	r.Get("/apps", api.listApps)
-	r.Get("/apps/{id}", api.getApp)
 
+	r.Get("/apps/{id}/getDeployment/{deploymentid}", api.GetDeploymentById)
+
+	r.Get("/apps/{id}", api.getApp)
+	r.Get("/apps/{id}/deployment", api.listDeployment)
 	r.Get("/apps/{id}/deployment/activeDeployment", api.getActiveDeployment)
 
 	r.Post("/apps/{id}/deploy", api.deployApp)
 
 	r.Post("/apps/{id}/stop", api.stopContainer)
+	r.Post("/apps/{id}/start", api.startContainer)
 	r.Delete("/apps/{id}", api.deleteApp)
 	return api, nil
 }

@@ -38,7 +38,7 @@ const (
 
 func (s *ContainerService) Deploy(app *db.Application) error {
 	deployment, err := s.db.CreateDeployment(context.Background(), db.CreateDeploymentParams{
-		Status: StatusPending,
+		Status: StatusCompleted,
 		AppID:  app.ID,
 		ID:     cuid2.Generate(),
 	})
@@ -101,7 +101,7 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 	}
 	slog.Info("container created", "id", container.ID)
 
-	err = s.StartContainer(app)
+	err = s.StartContainer(app.ID)
 
 	if err != nil {
 		return fmt.Errorf("error creating container: %w", err)
