@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { type App, getApp } from "$lib/api";
+  import type { App } from "$lib/api/apps/appTypes";
+  import { getApp } from "$lib/api/apps/getApp";
   import { page } from "$app/stores";
   import Input from "../Input.svelte";
 

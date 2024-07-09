@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-node": "^5.2.0",
 		"lucide": "^0.378.0",
 		"lucide-svelte": "^0.378.0",
 		"typewriter-effect": "^2.21.0"

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { type Deployment } from "$lib/api";
+  import { type Deployment } from "$lib/api/deployment/deploymentType";
   import StatusIcon from "../StatusIcon.svelte";
 
   export let deployment: Deployment;
 
+  let status = deployment.status;
   let created_at = new Date(deployment.created_at).toLocaleDateString();
 </script>
 

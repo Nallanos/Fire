@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { App } from "./../api/apps";
-  import { createApp } from "$lib/api/apps";
-  import { inputValue, apps } from "$lib/store";
+  import { listApps } from "$lib/api/apps/listApps";
+  import { createApp } from "$lib/api/apps/createApp";
+  import { inputValue } from "$lib/store";
+  import { apps } from "$lib/store";
   let val = "";
   const updateVal = (event: Event) => {
     let inputElement = event.target as HTMLInputElement;
@@ -9,8 +10,8 @@
     inputValue.set(val);
   };
   async function createAppWithSearchTerm() {
-    const newApp: App = await createApp({ name: val });
-    apps.update((currentApps) => [...currentApps, newApp]);
+    await createApp({ name: val });
+    apps.set(await listApps());
   }
 </script>
 

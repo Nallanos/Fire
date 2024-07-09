@@ -4,7 +4,7 @@
   let iconColor = "bg-[#9ca3af]";
   $: {
     switch (status) {
-      case "completed":
+      case "active":
         backgroundColor = "bg-[#192c2f]";
         iconColor = "bg-[#00bfa5]";
         break;

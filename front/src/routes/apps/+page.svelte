@@ -1,20 +1,24 @@
 <script lang="ts">
+  import type { PageServerData } from "./$types";
   import { onMount } from "svelte";
   import Input from "$lib/ui/Apps-input.svelte";
   import Card from "$lib/ui/Card.svelte";
-  import { listApps, type App } from "$lib/api";
+  import type { App } from "$lib/api/apps/appTypes";
   import { inputValue, apps } from "$lib/store";
   let displayedApps: App[] = [];
-
+  export let data: PageServerData;
   onMount(async () => {
-    const initialApps: App[] = await listApps();
-    apps.set(initialApps);
-
+    apps.set(data.apps);
     apps.subscribe((val: App[]) => {
       displayedApps = val;
       inputValue.subscribe((inputVal: string) => {
         let modifiedVal = inputVal.toLowerCase().replace(/\s/g, "");
-        if (inputVal === "" || inputVal === null || inputVal === undefined) {
+        if (
+          inputVal === "" ||
+          inputVal === null ||
+          inputVal === undefined ||
+          val === null
+        ) {
           displayedApps = val;
         } else {
           displayedApps = val.filter((item: App) =>

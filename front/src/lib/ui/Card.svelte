@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type App } from "$lib/api";
+  import type { App } from "$lib/api/apps/appTypes";
   export let app: App;
   let status = app.status;
   import StatusIcon from "./StatusIcon.svelte";

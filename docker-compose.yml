@@ -1,0 +1,33 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "444:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: back
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.reverse-proxy.rule=Host(`fire-backend-router`)"
+      - "traefik.http.services.backend-service.loadbalancer.server.port=8081"
+    ports:
+      - "8081:8081"
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: front
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.frontend-service.loadbalancer.server.port=5173"
+    ports:
+      - "5173:5173"
