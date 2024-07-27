@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -17,19 +18,18 @@ func (a *API) GetDeploymentById(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if err == applications.ErrApplicationNotFound {
-			slog.Error("ErrApplicationNotFound", err)
+			slog.Error(fmt.Sprintf("ErrApplicationNotFound %v", err))
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 		if err == sql.ErrNoRows {
-			slog.Error("No deployment defined yet", err)
+			slog.Error(fmt.Sprintf("No deployment defined yet %v", err))
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
-		slog.Error("error while getting deployment", err)
+		slog.Error(err.Error())
 		InternalServerError(w, err)
 		return
 	}
-
 	AnswerJson(w, deployment, http.StatusOK)
 }

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { onMount } from "svelte";
   import type { App } from "$lib/api/apps/appTypes";
   import { getApp } from "$lib/api/apps/getApp";
@@ -54,4 +54,4 @@
       <Input />
     </div>
   </div>
-</main>
+</main> -->

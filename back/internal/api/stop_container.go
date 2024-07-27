@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -10,7 +11,6 @@ import (
 
 func (a *API) stopContainer(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-
 	app, err := a.apps.GetApplication(context.Background(), id)
 
 	if err != nil {
@@ -22,7 +22,7 @@ func (a *API) stopContainer(w http.ResponseWriter, r *http.Request) {
 	deployment, err := a.deployments.GetLatestDeployment(context.Background(), id)
 
 	if err != nil {
-		slog.Error("error getting latest deployment", err)
+		slog.Error(fmt.Sprintf("error getting latest deployment %v", err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		InternalServerError(w, err)
 		return

@@ -2,57 +2,24 @@
   import type { App } from "$lib/api/apps/appTypes";
   import type { Deployment } from "$lib/api/deployment/deploymentType";
   import StatusIcon from "$lib/ui/StatusIcon.svelte";
-  import { listDeployments } from "$lib/api/deployment/listDeployments";
-  import { getActiveDeployment } from "$lib/api/deployment/getActiveDeployment";
-  import { onMount } from "svelte";
   import { page } from "$app/stores";
   import DeploymentCard from "$lib/ui/ApplicationPage/DeploymentCard.svelte";
-  import { getApp } from "$lib/api/apps/getApp";
+  import type { PageData } from "./$types";
+  export let data: PageData;
+
+  let app: App = data.app.data;
+  let deploymentList: Deployment[] = data.deploymentResult.data;
+  let activeDeployment: Deployment = data.activeDeploymentResult.data;
+  let deploymentListError = data.deploymentResult.error;
+  let activeDeploymentError = data.activeDeploymentResult.error;
+  let appError = data.app.error;
   let id: string = $page.params?.id;
-  let isActiveDeployment: boolean = false;
-  let app: App;
-  let status: string;
-  let activeDeployment: Deployment;
-  let created_at: string;
-  let deploymentList: Deployment[] = [];
-  let deploymentListError: string | null = null;
-  let activeDeploymentError: string | null = null;
-  let appError: string | null = null;
-
-  onMount(async () => {
-    try {
-      const appResult = await getApp(id);
-      if (appResult.error) {
-        appError = appResult.error;
-      } else {
-        app = appResult.data;
-        status = app.status;
-        console.log(app);
-      }
-      const deploymentResult = await listDeployments(id);
-      if (deploymentResult.error) {
-        deploymentListError = deploymentResult.error;
-        deploymentList = [];
-      } else {
-        deploymentList = deploymentResult.data;
-      }
-
-      const activeDeploymentResult = await getActiveDeployment(id);
-      if (activeDeploymentResult.error) {
-        activeDeploymentError = activeDeploymentResult.error;
-        isActiveDeployment = false;
-      } else {
-        activeDeployment = activeDeploymentResult.data;
-        created_at = new Date(activeDeployment.created_at).toLocaleDateString();
-        isActiveDeployment = true;
-      }
-    } catch (err) {
-      console.error("Unexpected error:", err);
-    }
-  });
+  let isActiveDeployment: boolean = !!activeDeployment;
+  let status: string = activeDeployment?.status;
+  let created_at: string = activeDeployment?.created_at;
 </script>
 
-<main class="grid gap-6">
+<main class="grid gap-6 container mx-auto">
   {#if isActiveDeployment && !activeDeploymentError}
     <div
       class="bg-gray-950 rounded-lg flex flex-col border border-gray-800 p-6 container mx-auto"
@@ -83,7 +50,7 @@
           <span class="font-medium px-2">{app.port}</span>
         </li>
         <li class="flex">
-          Created the
+          Created at
           <p class="px-2 font-medium">
             {created_at}
           </p>
@@ -98,9 +65,9 @@
     </div>
   {/if}
 
-  <h1 class="container mx-auto font-bold text-lg">Deployment list</h1>
-  <div class="grid gap-4 container mx-auto">
-    {#if deploymentListError || deploymentList == undefined}
+  <h1 class="font-bold text-lg">Deployment list</h1>
+  <div class="grid gap-4">
+    {#if deploymentListError}
       <p>Error loading deployment list: {deploymentListError}</p>
     {:else}
       {#each deploymentList as deployment}

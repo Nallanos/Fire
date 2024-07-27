@@ -1,9 +1,12 @@
-FROM node:16
+FROM node:alpine
+
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json ./
+RUN npm install
+
 COPY . .
 RUN npm run build
-ENV PORT 5173
-EXPOSE 5173
-CMD ["node", "build/index.js"]
+
+CMD ["node", "build"]
+
+EXPOSE 3000

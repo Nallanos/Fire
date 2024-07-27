@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -24,11 +25,11 @@ func (a *API) deployApp(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if err == applications.ErrApplicationNotFound {
-			slog.Error("ErrApplicationNotFound", err)
+			slog.Error(fmt.Sprintf("ErrApplicationNotFound %v", err))
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
-		slog.Error("error while depoying app", err)
+		slog.Error(fmt.Sprintf("error while deploying app %v", err))
 		InternalServerError(w, err)
 		return
 	}

@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"log/slog"
 
 	"net/http"
@@ -33,7 +34,7 @@ func NewAPI(docker *client.Client) (*API, error) {
 
 	sqliteDb, err := sql.Open("sqlite3", "./db/database.sqlite3")
 	if err != nil {
-		slog.Error("Error opening database", err)
+		slog.Error(fmt.Sprintf("Error opening database %v", err))
 		return nil, err
 	}
 	queries := db.New(sqliteDb)

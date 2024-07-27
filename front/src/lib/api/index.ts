@@ -1,1 +1,1 @@
-export const API_URL = "http://fire-backend-router";
+export const API_URL = "http://74.235.166.230:8081";

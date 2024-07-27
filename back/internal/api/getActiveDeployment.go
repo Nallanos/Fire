@@ -2,13 +2,10 @@ package api
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/nallanos/fire/internal/applications"
 )
 
 func (a *API) getActiveDeployment(w http.ResponseWriter, r *http.Request) {
@@ -17,17 +14,11 @@ func (a *API) getActiveDeployment(w http.ResponseWriter, r *http.Request) {
 	deployment, err := a.deployments.GetLatestDeployment(context.Background(), id)
 
 	if err != nil {
-		if err == applications.ErrApplicationNotFound {
-			slog.Error("ErrApplicationNotFound", err)
-			http.Error(w, err.Error(), http.StatusNotFound)
+		if err.Error() == "error getting deployment: sql: no rows in result set" {
+			AnswerJson(w, nil, http.StatusOK)
 			return
 		}
-		if errors.Is(err, sql.ErrNoRows) {
-			slog.Error("No deployment defined yet", err)
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-		slog.Error("error while getting deployment", err)
+		slog.Error(err.Error())
 		InternalServerError(w, err)
 		return
 	}

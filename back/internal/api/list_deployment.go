@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"net/http"
 
@@ -14,15 +13,13 @@ func (a *API) listDeployment(w http.ResponseWriter, r *http.Request) {
 
 	apps, err := a.deployments.ListApplicationDeployments(context.Background(), id)
 	if err != nil {
-		if err == errors.New("application not found") {
-			slog.Error("ErrApplicationNotFound", err)
-			http.Error(w, err.Error(), http.StatusNotFound)
+		if err.Error() == "error getting deployment: sql: no rows in result set" {
+			AnswerJson(w, nil, http.StatusOK)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		slog.Error("error listing application", err)
+		slog.Error(err.Error())
 		return
 	}
-
 	AnswerJson(w, apps, 200)
 }
