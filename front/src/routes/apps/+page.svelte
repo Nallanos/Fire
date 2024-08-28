@@ -10,25 +10,27 @@
   let displayedApps: App[] = [];
   export let data: PageServerData;
   onMount(() => {
-    apps.set(data.apps);
-    apps.subscribe((val: App[]) => {
-      displayedApps = val;
-      inputValue.subscribe((inputVal: string) => {
-        let modifiedVal = inputVal.toLowerCase().replace(/\s/g, "");
-        if (
-          inputVal === "" ||
-          inputVal === null ||
-          inputVal === undefined ||
-          val === null
-        ) {
-          displayedApps = val;
-        } else {
-          displayedApps = val.filter((item: App) =>
-            item.name.toLowerCase().includes(modifiedVal),
-          );
-        }
+    if (data.apps != undefined) {
+      apps.set(data.apps);
+      apps.subscribe((val: App[]) => {
+        displayedApps = val;
+        inputValue.subscribe((inputVal: string) => {
+          let modifiedVal = inputVal.toLowerCase().replace(/\s/g, "");
+          if (
+            inputVal === "" ||
+            inputVal === null ||
+            inputVal === undefined ||
+            val === null
+          ) {
+            displayedApps = val;
+          } else {
+            displayedApps = val.filter((item: App) =>
+              item.name.toLowerCase().includes(modifiedVal),
+            );
+          }
+        });
       });
-    });
+    }
   });
 </script>
 

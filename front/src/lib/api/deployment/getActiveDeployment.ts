@@ -1,7 +1,7 @@
 import { API_URL } from "../index";
 import { errorsMessage } from "../error";
 
-export async function getActiveDeployment(id: string) {
+export async function getActiveDeployment(id: string, fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
   const req = new Request(API_URL + `/apps/${id}/deployment/activeDeployment`, {
     method: "GET",
     headers: {

@@ -18,7 +18,7 @@
   <Input
     type="email"
     placeholder="Search for applications "
-    class="bg-gray-950 border border-gray-800 focus:outline-none"
+    class=" border border-gray-800 focus:outline-none"
     on:input={updateSearchVal}
     bind:value={searchVal}
   />

@@ -24,3 +24,16 @@ type Deployment struct {
 	CreatedAt  time.Time    `json:"created_at"`
 	FinishedAt sql.NullTime `json:"finished_at"`
 }
+
+type Token struct {
+	Token     string    `json:"token"`
+	UserID    string    `json:"user_id"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
+type User struct {
+	ID       string `json:"id"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}

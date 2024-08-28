@@ -15,9 +15,11 @@ import (
 	"github.com/nallanos/fire/internal/applications"
 	"github.com/nallanos/fire/internal/db"
 	"github.com/nallanos/fire/internal/deployment"
+	"github.com/nallanos/fire/internal/users"
 )
 
 type API struct {
+	users       *users.Service
 	router      *chi.Mux
 	apps        *applications.Service
 	docker      *client.Client
@@ -40,33 +42,37 @@ func NewAPI(docker *client.Client) (*API, error) {
 	queries := db.New(sqliteDb)
 	deploymentsService := deployment.NewService(docker, queries)
 	appsService := applications.NewService(queries, deploymentsService)
-
+	usersService := users.NewService(queries)
 	api := &API{
 		apps:        appsService,
 		router:      r,
 		docker:      docker,
 		deployments: deploymentsService,
+		users:       usersService,
 	}
+	// Private Routes
+	r.Group(func(r chi.Router) {
+		r.Use(api.AuthMiddleware)
+		r.Get("/apps/{id}", api.getApp)
+		r.Get("/apps/{id}/deployment", api.listDeployment)
+		r.Get("/apps/{id}/deployment/activeDeployment", api.getActiveDeployment)
+		r.Post("/apps", api.createApp)
+		r.Get("/apps", api.listApps)
+		r.Post("/apps/{id}/deploy", api.deployApp)
+		r.Post("/apps/{id}/stop", api.stopContainer)
+		r.Post("/apps/{id}/start", api.startContainer)
+		r.Post("/apps/{id}/download", api.downloadRepo)
+		r.Get("/apps/{id}/getDeployment/{DeploymentId}", api.getDeploymentById)
+		r.Delete("/apps/{id}", api.deleteApp)
+	})
 
+	// Public routes
+	r.Group(func(r chi.Router) {
+		r.Post("/signIn", api.signIn)
+		r.Post("/signUp", api.signUp)
+	})
 	r.Get("/health", api.health)
 
-	r.Post("/apps", api.createApp)
-	r.Get("/apps", api.listApps)
-
-	r.Get("/apps/{id}", api.getApp)
-
-	r.Get("/apps/{id}/deployment", api.listDeployment)
-	r.Get("/apps/{id}/deployment/activeDeployment", api.getActiveDeployment)
-
-	r.Post("/apps/{id}/deploy", api.deployApp)
-	r.Post("/apps/{id}/stop", api.stopContainer)
-	r.Post("/apps/{id}/start", api.startContainer)
-
-	r.Post("/apps/{id}/download", api.downloadRepo)
-
-	r.Get("/apps/{id}/getDeployment/{DeploymentId}", api.GetDeploymentById)
-
-	r.Delete("/apps/{id}", api.deleteApp)
 	return api, nil
 }
 

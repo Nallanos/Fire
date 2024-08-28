@@ -7,11 +7,10 @@ export async function getApp(id: string) {
       "Content-Type": "application/json",
     },
   });
-
   try {
     const res = await fetch(req);
     if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
+      throw new Error(`HTTP error Status: ${res.status} at ${res.url}`);
     }
     const data = await res.json();
     return { data: data };

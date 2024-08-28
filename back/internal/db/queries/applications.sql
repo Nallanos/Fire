@@ -4,7 +4,6 @@ SELECT * FROM applications;
 -- name: GetApplication :one
 SELECT * FROM applications WHERE id = ? LIMIT 1;
 
-
 -- name: CreateApplication :one
 INSERT INTO applications (id, name, image, port, status)
 VALUES (?, ?, ?, ?, ?)

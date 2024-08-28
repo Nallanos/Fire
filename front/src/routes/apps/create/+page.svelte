@@ -39,19 +39,15 @@
             >
         </Card.Header>
         <Card.Content>
-            <form
-                on:submit={async () => {
-                    await createApp({ name: appName });
-                    window.location.href = "/apps";
-                }}
-            >
+            <form method="post" action="?/createApp">
                 <div class="grid w-full items-center gap-4">
                     <div class="flex flex-col space-y-1.5">
                         <Label for="name">Name</Label>
                         <Input
-                            on:input={updateInputVal}
                             bind:value={appName}
-                            id="name"
+                            id="appName"
+                            name="appName"
+                            type="appName"
                             placeholder="Name of your project"
                             class="focus:outline-none"
                         />

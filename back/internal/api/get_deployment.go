@@ -11,7 +11,7 @@ import (
 	"github.com/nallanos/fire/internal/applications"
 )
 
-func (a *API) GetDeploymentById(w http.ResponseWriter, r *http.Request) {
+func (a *API) getDeploymentById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "deploymentid")
 
 	deployment, err := a.deployments.GetDeploymentById(context.Background(), id)

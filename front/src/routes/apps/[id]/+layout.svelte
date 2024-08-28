@@ -14,13 +14,12 @@
   export let data: LayoutData;
 
   let id: string = $page.params?.id;
-  let app = data.app.data;
-  console.log(data.app);
+  let app = data.app;
 </script>
 
 <header class="flex">
   <div
-    class="bg-gray-950 rounded-lg py-6 flex justify-between items-center w-full container mx-auto"
+    class="bg-black rounded-lg py-6 flex justify-between items-center w-full container mx-auto"
   >
     <h1 class="text-2xl font-bold">{app?.name}</h1>
 
@@ -41,17 +40,11 @@
           </button>
         {/if}
       </form>
-      <Button
-        variant="destructive"
-        class="bg-red-600 "
-        on:click={async () => {
-          await deleteApp(id);
-          apps.set(await listApps());
-          window.location.href = "/apps";
-        }}
-      >
-        Delete
-      </Button>
+      <form action="?/deleteApp" method="post">
+        <Button variant="destructive" class="bg-red-600 " type="submit"
+          >Delete</Button
+        >
+      </form>
     </ul>
   </div>
 </header>
