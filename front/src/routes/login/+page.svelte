@@ -14,7 +14,7 @@
     class="flex container flex-col justify-center items-center pt-12 h-full bg-black"
 >
     <h1 class="text-3xl font-bold pb-6">Fire</h1>
-    <Card.Root class="w-[500px] border border-gray-800">
+    <Card.Root class="border md:w-[500px] border-gray-800">
         <Card.Header>
             <Card.Title>Log in</Card.Title>
         </Card.Header>
@@ -35,7 +35,7 @@
                         <Label for="email">Email</Label>
                         <Input
                             bind:value={email}
-                            name="email" 
+                            name="email"
                             id="email"
                             type="email"
                             class="focus:outline-none"

@@ -17,24 +17,12 @@
 <main class="grid gap-6 container mx-auto">
   {#if isActiveDeployment}
     <div
-      class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 container mx-auto"
+      class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 md:container md:mx-auto"
     >
-      <div class="flex items-center gap-2 justify-between">
+      <div class="flex flex-col md:flex-row gap-2 justify-between">
         <div class="flex items-center gap-6">
           <p class="text-xl font-bold">{activeDeployment.id}</p>
           <StatusIcon {status} />
-        </div>
-        <div class="gap-4 flex">
-          <form method="POST" action="?/startContainer">
-            <button class="w-20 h-8 bg-white text-black rounded-md"
-              >Start</button
-            >
-          </form>
-          <form method="POST" action="?/stopContainer">
-            <button class="w-20 h-8 border border-gray-800 rounded-md"
-              >Stop</button
-            >
-          </form>
         </div>
       </div>
 
@@ -57,11 +45,21 @@
           >
         </li>
       </ul>
+      <div class="gap-6 flex pt-4">
+        <form method="POST" action="?/startContainer">
+          <button class="w-20 h-8 bg-white text-black rounded-md">Start</button>
+        </form>
+        <form method="POST" action="?/stopContainer">
+          <button class="w-20 h-8 border border-gray-800 rounded-md"
+            >Stop</button
+          >
+        </form>
+      </div>
     </div>
   {/if}
 
   <h1 class="font-bold text-lg">Deployment list</h1>
-  <div class="grid gap-4">
+  <div class="grid gap-4 pb-4">
     {#if deploymentList != undefined}
       {#each deploymentList as deployment}
         <DeploymentCard {deployment}></DeploymentCard>

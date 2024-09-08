@@ -9,7 +9,7 @@
 </script>
 
 <div
-  class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 container mx-auto"
+  class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 md:container md:mx-auto"
 >
   <div class="flex items-center gap-2">
     <div class="text-xl font-bold">{deployment.id}</div>
