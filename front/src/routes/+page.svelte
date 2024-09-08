@@ -10,6 +10,7 @@
   const items = [
     { name: "Home", href: "/" },
     { name: "Pricing", href: "/princings" },
+    { name: "Apps", href: "/apps" },
   ];
   onMount(() => {
     const interval = setInterval(() => {

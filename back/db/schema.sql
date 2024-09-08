@@ -1,10 +1,11 @@
-CREATE TABLE IF NOT EXISTS "schema_migrations" (version varchar(128) primary key);
+CREATE TABLE IF NOT EXISTS "schema_migrations" (version varchar(255) primary key);
 CREATE TABLE applications (
     id text primary key not null,
     name text not null,
     status text not null,
     image text not null,
-    port text not null
+    port text not null,
+    user_id text not null references users(id) on delete cascade
 );
 CREATE TABLE deployments (
     id text primary key not null,
@@ -30,4 +31,5 @@ INSERT INTO "schema_migrations" (version) VALUES
   ('20240208190923'),
   ('20240320193040'),
   ('20240728125311'),
-  ('20240728132657');
+  ('20240728132657'),
+  ('20240902073426');

@@ -17,4 +17,3 @@ WHERE id = ?;
 -- name: DeleteApplication :exec
 DELETE FROM applications WHERE id = ?;
 
-

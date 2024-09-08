@@ -25,7 +25,8 @@ func NewService(db *db.Queries, s *deployment.ContainerService) *Service {
 }
 
 type CreateApplicationOptions struct {
-	Name string
+	Name  string
+	Image string
 }
 
 func (s *Service) getRandomPortInRange(start, end int, userID string) int {
@@ -59,6 +60,7 @@ func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOp
 		db.CreateApplicationParams{
 			ID:     cuid2.Generate(),
 			Name:   app.Name,
+			Image:  app.Image,
 			Status: "inactive",
 			Port:   fmt.Sprintf("%d", randomPort),
 			UserID: userID,
@@ -85,7 +87,6 @@ func (s *Service) GetApplication(ctx context.Context, id string) (*db.Applicatio
 	if err != nil {
 		return nil, fmt.Errorf("error while getting application: %w", err)
 	}
-
 	return &application, nil
 }
 func (s *Service) DeleteApplication(ctx context.Context, id string) error {

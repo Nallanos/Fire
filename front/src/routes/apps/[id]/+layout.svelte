@@ -1,13 +1,10 @@
 <script lang="ts">
-  import { apps } from "$lib/store";
-  import { listApps } from "$lib/api/apps/listApps";
   import { Settings } from "lucide-svelte";
   import { PanelsTopLeft } from "lucide-svelte";
   import { List } from "lucide-svelte";
   import { Braces } from "lucide-svelte";
   import { Computer } from "lucide-svelte";
   import { page } from "$app/stores";
-  import { deleteApp } from "$lib/api/apps/deleteApp";
   import type { LayoutData } from "./$types";
   import { Button } from "$lib/components/ui/button/index";
 
@@ -21,7 +18,10 @@
   <div
     class="bg-black rounded-lg py-6 flex justify-between items-center w-full container mx-auto"
   >
-    <h1 class="text-2xl font-bold">{app?.name}</h1>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-2xl font-bold">{app?.name}</h1>
+      <p class="text-xs">{app?.image}</p>
+    </div>
 
     <ul class="flex gap-4">
       <form action="?/deploy" method="POST">
@@ -93,4 +93,5 @@
     </a>
   </nav>
 </div>
-<slot></slot>
+
+<slot />

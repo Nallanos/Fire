@@ -4,6 +4,8 @@ export const actions = {
     createApp: async ({ request, fetch }) => {
         const data = await request.formData();
         const appName = data.get('appName') as string;
+        const linkAppImage = data.get('linkAppImage') as string;
+        console.log(linkAppImage)
         if (!appName) {
             console.error(`Impossible to createApp with ${appName} appName`);
             throw new Error(`Invalid appName: ${appName}`);
@@ -13,7 +15,7 @@ export const actions = {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name: appName }),
+                body: JSON.stringify({ name: appName, image: linkAppImage }),
             });
             try {
                 const res = await fetch(req);

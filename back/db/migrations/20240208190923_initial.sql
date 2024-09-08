@@ -8,7 +8,6 @@ CREATE TABLE applications (
     port text not null,
     user_id text not null references users(id) on delete cascade
 );
-
 -- migrate:down
 
 DROP TABLE applications;

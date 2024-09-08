@@ -6,28 +6,11 @@
     import { Label } from "$lib/components/ui/label/index.js";
     import { createApp } from "$lib/api/apps/createApp";
     let appName = "";
+    let linkAppImage = "";
     async function updateInputVal(event: Event) {
         let inputElement = event.target as HTMLInputElement;
         appName = inputElement.value;
     }
-    const frameworks = [
-        {
-            value: "sveltekit",
-            label: "SvelteKit",
-        },
-        {
-            value: "next",
-            label: "Next.js",
-        },
-        {
-            value: "astro",
-            label: "Astro",
-        },
-        {
-            value: "nuxt",
-            label: "Nuxt.js",
-        },
-    ];
 </script>
 
 <main class="flex container justify-center pt-12 h-full">
@@ -53,21 +36,15 @@
                         />
                     </div>
                     <div class="flex flex-col space-y-1.5">
-                        <Label for="framework">Framework</Label>
-                        <Select.Root>
-                            <Select.Trigger id="framework">
-                                <Select.Value placeholder="Select" />
-                            </Select.Trigger>
-                            <Select.Content>
-                                {#each frameworks as framework}
-                                    <Select.Item
-                                        value={framework.value}
-                                        label={framework.label}
-                                        >{framework.label}</Select.Item
-                                    >
-                                {/each}
-                            </Select.Content>
-                        </Select.Root>
+                        <Label for="framework">Image</Label>
+                        <Input
+                            bind:value={linkAppImage}
+                            id="linkAppImage"
+                            name="linkAppImage"
+                            type="linkAppImage"
+                            placeholder="docker.io/library/nginx:latest"
+                            class="focus:outline-none"
+                        />
                     </div>
                     <Card.Footer class="flex justify-between p-0">
                         <Button variant="outline">Cancel</Button>

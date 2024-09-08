@@ -71,7 +71,7 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 		}
 	}
 
-	reader, err := s.docker.ImagePull(context.Background(), "docker.io/library/nginx:latest", types.ImagePullOptions{})
+	reader, err := s.docker.ImagePull(context.Background(), app.Image, types.ImagePullOptions{})
 	if err != nil {
 		slog.Error("error pulling image")
 		return fmt.Errorf("error pulling image: %w", err)
@@ -86,7 +86,7 @@ func (s *ContainerService) Deploy(app *db.Application) error {
 			Labels: map[string]string{
 				"app_id": app.ID,
 			},
-			Image: "docker.io/library/nginx:latest",
+			Image: app.Image,
 		}, nil, nil, nil, deployment.ID)
 	if err != nil {
 		return fmt.Errorf("error creating container: %w", err)

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { App } from "$lib/api/apps/appTypes";
   import type { Deployment } from "$lib/api/deployment/deploymentType";
   import StatusIcon from "$lib/ui/StatusIcon.svelte";
   import DeploymentCard from "$lib/ui/ApplicationPage/DeploymentCard.svelte";

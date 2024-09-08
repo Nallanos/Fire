@@ -74,7 +74,6 @@ export const load: LayoutServerLoad = async ({ fetch, params }) => {
   const appPromise = getApp(id, fetch);
   const activeDeploymentPromise = getActiveDeployment(id, fetch);
   const deploymentsPromise = listDeployments(id, fetch);
-
   const [app, activeDeployment, deployments] = await Promise.all([
     appPromise,
     activeDeploymentPromise,
