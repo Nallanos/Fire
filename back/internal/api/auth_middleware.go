@@ -10,7 +10,7 @@ import (
 
 type userKeyType struct{}
 
-var userKey userKeyType = userKeyType{}
+var UserKey userKeyType = userKeyType{}
 
 func (a *API) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -26,12 +26,12 @@ func (a *API) AuthMiddleware(next http.Handler) http.Handler {
 			UnauthorizedError(w, err)
 			return
 		}
-		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userKey, user)))
+		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), UserKey, user.ID)))
 	})
 }
 
 func GetUserFromCtx(ctx context.Context) (*db.User, error) {
-	u := ctx.Value(userKey)
+	u := ctx.Value(UserKey)
 	if u == nil {
 		return nil, fmt.Errorf("user not found in context")
 	}

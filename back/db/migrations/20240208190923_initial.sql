@@ -5,7 +5,8 @@ CREATE TABLE applications (
     name text not null,
     status text not null,
     image text not null,
-    port text not null
+    port text not null,
+    user_id text not null references users(id) on delete cascade
 );
 
 -- migrate:down

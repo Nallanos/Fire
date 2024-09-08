@@ -28,8 +28,8 @@ type CreateApplicationOptions struct {
 	Name string
 }
 
-func (s *Service) getRandomPortInRange(start, end int) int {
-	apps, err := s.ListApplications(context.Background())
+func (s *Service) getRandomPortInRange(start, end int, userID string) int {
+	apps, err := s.ListApplications(context.Background(), userID)
 	if err != nil {
 		slog.Error("error while listing applications: %w", err)
 	}
@@ -53,14 +53,15 @@ func (s *Service) getRandomPortInRange(start, end int) int {
 	return -1
 }
 
-func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOptions) (*db.Application, error) {
-	randomPort := s.getRandomPortInRange(3000, 4000)
+func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOptions, userID string) (*db.Application, error) {
+	randomPort := s.getRandomPortInRange(3000, 4000, userID)
 	application, err := s.db.CreateApplication(ctx,
 		db.CreateApplicationParams{
 			ID:     cuid2.Generate(),
 			Name:   app.Name,
 			Status: "inactive",
 			Port:   fmt.Sprintf("%d", randomPort),
+			UserID: userID,
 		})
 	if err != nil {
 		return nil, fmt.Errorf("error while creating application: %w", err)
@@ -68,8 +69,8 @@ func (s *Service) CreateApplication(ctx context.Context, app CreateApplicationOp
 	return &application, nil
 }
 
-func (s *Service) ListApplications(ctx context.Context) ([]db.Application, error) {
-	applications, err := s.db.ListApplications(ctx)
+func (s *Service) ListApplications(ctx context.Context, userID string) ([]db.Application, error) {
+	applications, err := s.db.ListApplications(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("error while listing applications: %w", err)
 	}

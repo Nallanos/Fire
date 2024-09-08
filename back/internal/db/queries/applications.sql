@@ -1,12 +1,12 @@
 -- name: ListApplications :many
-SELECT * FROM applications;
+SELECT * FROM applications WHERE user_id = ?;
 
 -- name: GetApplication :one
 SELECT * FROM applications WHERE id = ? LIMIT 1;
 
 -- name: CreateApplication :one
-INSERT INTO applications (id, name, image, port, status)
-VALUES (?, ?, ?, ?, ?)
+INSERT INTO applications (id, name, image, port, status, user_id)
+VALUES (?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: UpdateApplication :exec

@@ -100,7 +100,7 @@ func (s *Service) verifyAuth(ctx context.Context, email, password string) (bool,
 		return false, db.User{}, fmt.Errorf("error while comparing hash and password: %w", err)
 	}
 
-	return true, db.User{}, nil
+	return true, user, nil
 }
 
 func (s *Service) Login(ctx context.Context, email, password string) (string, error) {
@@ -112,7 +112,6 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, er
 	if !ok {
 		return "", errdefs.ErrUnauthorized
 	}
-
 	token, err := s.createSession(ctx, user.ID)
 	if err != nil {
 		return "", fmt.Errorf("error while creating session: %w", err)
