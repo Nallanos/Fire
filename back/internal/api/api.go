@@ -28,7 +28,6 @@ type API struct {
 
 func NewAPI(docker *client.Client) (*API, error) {
 	r := chi.NewRouter()
-
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -50,9 +49,9 @@ func NewAPI(docker *client.Client) (*API, error) {
 		deployments: deploymentsService,
 		users:       usersService,
 	}
-	// Private Routes
+	// Private Http Routes
 	r.Group(func(r chi.Router) {
-		r.Use(api.AuthMiddleware)
+		r.Use(api.AuthHttpMiddleware)
 		r.Get("/apps/{id}", api.getApp)
 		r.Get("/apps/{id}/deployment", api.listDeployment)
 		r.Get("/apps/{id}/deployment/activeDeployment", api.getActiveDeployment)
@@ -61,15 +60,22 @@ func NewAPI(docker *client.Client) (*API, error) {
 		r.Post("/apps/{id}/deploy", api.deployApp)
 		r.Post("/apps/{id}/stop", api.stopContainer)
 		r.Post("/apps/{id}/start", api.startContainer)
-		r.Post("/apps/{id}/download", api.downloadRepo)
 		r.Get("/apps/{id}/getDeployment/{DeploymentId}", api.getDeploymentById)
 		r.Delete("/apps/{id}", api.deleteApp)
+		r.Get("/user", api.getUserByToken)
 	})
 
+	// Private WebSockets routes
+	r.Group(func(r chi.Router) {
+		r.Use(api.AuthWebSocketMiddleware)
+		r.Get("/{id}/stats", api.getStatsOfActiveDeployment)
+		r.Get("/{id}/logs", api.getLogs)
+	})
 	// Public routes
 	r.Group(func(r chi.Router) {
 		r.Post("/signIn", api.signIn)
 		r.Post("/signUp", api.signUp)
+
 	})
 	r.Get("/health", api.health)
 

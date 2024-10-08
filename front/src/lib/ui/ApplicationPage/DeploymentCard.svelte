@@ -8,8 +8,9 @@
   let created_at = new Date(deployment.created_at).toLocaleDateString();
 </script>
 
-<div
+<a
   class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 md:container md:mx-auto"
+  href={`/apps/${deployment.app_id}/${deployment.id}`}
 >
   <div class="flex items-center gap-2">
     <div class="text-xl font-bold">{deployment.id}</div>
@@ -27,4 +28,4 @@
       </p>
     </li>
   </ul>
-</div>
+</a>

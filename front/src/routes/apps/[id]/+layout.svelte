@@ -6,6 +6,7 @@
     Braces,
     Computer,
     ChevronDown,
+    LayoutDashboard,
   } from "lucide-svelte";
   import { page } from "$app/stores";
   import { Button } from "$lib/components/ui/button/index";
@@ -20,6 +21,7 @@
 
   const links = [
     { href: `/apps/${id}`, icon: PanelsTopLeft, text: "Overview" },
+    { href: `/apps/${id}/dashboard`, icon: LayoutDashboard, text: "Dashboard" },
     { href: `/apps/${id}/env`, icon: Braces, text: "Env" },
     { href: `/apps/${id}/logs`, icon: List, text: "Logs" },
     { href: `/apps/${id}/domain`, icon: Computer, text: "Domain" },
@@ -52,24 +54,25 @@
       <h1 class="text-2xl font-bold">{app?.name}</h1>
       <p class="text-xs">{app?.image}</p>
     </div>
-    <ul class="flex gap-4">
-      <form action="?/deploy" method="POST">
-        <button
-          formaction={app.status === "active" ? "?/stopContainer" : undefined}
-          class="border rounded-md border-gray-800 w-[80px] h-[40px] py-10px bg-white text-black hover:bg-primary/90"
-        >
-          {app.status === "active" ? "Stop" : "Deploy"}
-        </button>
-      </form>
-      <form action="?/deleteApp" method="post">
-        <Button variant="destructive" class="bg-red-600" type="submit"
-          >Delete</Button
-        >
-      </form>
-    </ul>
+    {#if $page.url.href == `http://localhost:5173/apps/${app.id}` || `http://localhost:5173/apps/${app.id}?/deploy` || `http://localhost:5173/apps/${app.id}?/stopContainer`}
+      <ul class="flex gap-4 py-2">
+        <form action={`?/deploy`} method="POST">
+          <button
+            formaction={app.status === "active" ? `?/stopContainer` : undefined}
+            class="border rounded-md border-gray-800 w-[80px] h-[40px] py-10px bg-white text-black hover:bg-primary/90"
+          >
+            {app.status === "active" ? "Stop" : "Deploy"}
+          </button>
+        </form>
+        <form action="?/deleteApp" method="post">
+          <Button variant="destructive" class="bg-red-600" type="submit"
+            >Delete</Button
+          >
+        </form>
+      </ul>
+    {/if}
   </div>
 </header>
-
 <div class="flex h-24 py-6 container mx-auto w-full relative md:hidden">
   <button
     bind:this={dropdownRef}
@@ -81,7 +84,7 @@
 
   {#if isOpen}
     <nav
-      class="absolute bg-[#09090b] border border-gray-800 text-white mt-2 rounded shadow-lg z-10 w-56"
+      class="absolute bg-[#09090b] border border-gray-800 text-white pt-2 rounded shadow-lg z-10 w-56"
     >
       {#each links as { href, icon: Icon, text }}
         <a
@@ -96,7 +99,7 @@
   {/if}
 </div>
 
-<div class="hidden md:flex h-24 py-6 container mx-auto w-full">
+<div class="hidden md:flex h-12 container w-full">
   <nav class="flex divide-x border border-gray-800 rounded items-center">
     {#each links as { href, icon: Icon, text }}
       <a

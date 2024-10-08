@@ -133,6 +133,7 @@ func (s *Service) createSession(ctx context.Context, userID string) (string, err
 	}
 	hashValue := hash.Sum([]byte{})
 
+	fmt.Println(userID, string(hashValue))
 	err = s.db.CreateSession(ctx, db.CreateSessionParams{
 		UserID:    userID,
 		Token:     string(hashValue),

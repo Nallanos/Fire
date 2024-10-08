@@ -1,17 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Sun from "lucide-svelte/icons/sun";
-  import Moon from "lucide-svelte/icons/moon";
-  import { toggleMode } from "mode-watcher";
-  import { Button } from "$lib/components/ui/button/index.ts";
+  import HomeCard from "lib/ui/HomeCard.svelte";
   let texts = ["Deploy.", "Enjoy.", "Code."];
   let index = 0;
   let currentText = "Code.";
-  const items = [
-    { name: "Home", href: "/" },
-    { name: "Pricing", href: "/princings" },
-    { name: "Apps", href: "/apps" },
-  ];
+
   onMount(() => {
     const interval = setInterval(() => {
       eraseWriter(() => {
@@ -42,58 +35,61 @@
   }
 </script>
 
-<header class="border-b border-gray-800 h-20 md:justify-evenly w-full">
-  <div class="flex items-center container w-full md:justify-evenly h-full">
-    <a href="/" class="flex">
-      <img src="/Fire.png" alt="Fire logo" class="w-[96px] h-[96px]" />
-    </a>
-
-    <div class="text-md gap-10 hidden md:flex">
-      {#each items as item}
-        <a class="hover:text-gray-300" href={item.href}>
-          {item.name}
-        </a>
-      {/each}
-    </div>
-
-    <div class="flex gap-6 md:gap-4 justify-evenly md:justify-end w-2/4">
-      <Button href="/sign-up" class="w-[60px] ">Sign up</Button>
-      <Button href="/login" variant="outline" class="w-[60px]">Log in</Button>
-      <Button
-        on:click={toggleMode}
-        variant="secondary"
-        size="icon"
-        class="w-[30px]"
-      >
-        <Sun
-          class=" md:w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-        />
-        <Moon
-          class="absolute h-[1.2rem] w-[0.9rem] md:w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-        />
-        <span class="sr-only">Toggle theme</span>
-      </Button>
-    </div>
-  </div>
-</header>
-
-<main class="container items-center justify-center flex flex-col">
-  <div class="flex flex-col py-20">
-    <h1 class="md:text-7xl text-5xl font-bold font-mono text-blue-500">
+<main class="container items-center justify-center flex w-full flex-col">
+  <div class="flex flex-col pt-20 text-center">
+    <h1
+      class="md:text-7xl text-5xl font-bold text-blue-500 font-sans transition-all duration-500 ease-in-out"
+    >
       Click.
     </h1>
-    <span>
-      <h1
-        class="md:text-7xl text-5xl font-bold font-mono blur-out blur-in h-[48px] md:h-[72px]"
-      >
-        {currentText}
-      </h1>
-    </span>
-    <h1 class="text-red-500 text-5xl md:text-7xl font-bold font-mono">Done.</h1>
 
-    <p class="pt-8">
+    <h1
+      class="md:text-7xl text-5xl font-bold font-sans text-white md:h-[72px] h-[48px] transition-colors duration-500 ease-in-out"
+    >
+      {currentText}
+    </h1>
+
+    <h1
+      class="text-red-500 text-5xl md:text-7xl font-bold font-sans transition-all duration-500 ease-in-out"
+    >
+      Done.
+    </h1>
+
+    <p
+      class="pt-8 max-w-2xl mx-auto text-lg text-gray-400 leading-relaxed font-light"
+    >
       Stay in the flow with instant dev experiences. No more hours
       stashing/pulling/installing locally — just click, and start coding.
     </p>
   </div>
+
+  <!-- Carte animée -->
+  <div class="w-full px-4 sm:w-3/4 lg:w-1/2 mt-12">
+    <HomeCard />
+  </div>
 </main>
+
+<style global>
+  /* Ajoute des animations subtiles */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  h1 {
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  @keyframes blinkCursor {
+    from {
+      border-right-color: rgba(255, 255, 255, 0.75);
+    }
+    to {
+      border-right-color: transparent;
+    }
+  }
+</style>

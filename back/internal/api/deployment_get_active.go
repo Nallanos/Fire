@@ -9,9 +9,8 @@ import (
 )
 
 func (a *API) getActiveDeployment(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	deployment, err := a.deployments.GetLatestDeployment(context.Background(), id)
+	app_id := chi.URLParam(r, "id")
+	deployment, err := a.deployments.GetLatestDeployment(context.Background(), app_id)
 
 	if err != nil {
 		if err.Error() == "error getting deployment: sql: no rows in result set" {

@@ -5,10 +5,10 @@
   import type { App } from "$lib/api/apps/appTypes";
   import { ExternalLink } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button/index";
+  export let data: PageServerData;
 
   let displayedApps: App[] = [];
   let inputVal = "";
-  export let data: PageServerData;
 
   $: displayedApps = data.apps
     ? data.apps.filter((app: App) =>
@@ -19,7 +19,7 @@
     : [];
 </script>
 
-<div class="container mx-auto px-4">
+<div class="container mx-auto px-4 pt-12">
   <h2 class="text-2xl font-bold pb-6 pr-6">Apps</h2>
   <div class="flex gap-2">
     <div

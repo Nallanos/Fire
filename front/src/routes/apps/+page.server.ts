@@ -24,27 +24,27 @@ export const load: PageServerLoad = async ({ fetch }) => {
     });
 
     const res = await fetch(req);
+    console.log(res.status, res.ok)
 
     if (!res.ok) {
       throw error(res.status, `Failed to load apps: ${res.statusText}`);
     }
+
 
     const apps: App[] = await res.json();
 
     return { apps };
 
   } catch (err: any) {
-    console.error("Error loading apps:", err);
-    throw error(500, err);
+    console.log(err)
+    throw error(err.status, err.body.message);
   }
 };
 
 
 export const actions: Actions = {
   deleteCookies: async ({ cookies }) => {
-    console.log("Deleting cookies...");
     cookies.delete("token", { path: '/' });
-
-    return redirect(303, "/");
+    redirect(303, "/");
   }
 };

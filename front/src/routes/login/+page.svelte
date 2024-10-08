@@ -10,9 +10,7 @@
     let username = "";
 </script>
 
-<main
-    class="flex container flex-col justify-center items-center pt-12 h-full bg-black"
->
+<main class="flex container flex-col justify-center items-center pt-12 h-full">
     <h1 class="text-3xl font-bold pb-6">Fire</h1>
     <Card.Root class="border md:w-[500px] border-gray-800">
         <Card.Header>

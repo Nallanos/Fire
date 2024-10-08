@@ -12,7 +12,7 @@ type userKeyType struct{}
 
 var UserKey userKeyType = userKeyType{}
 
-func (a *API) AuthMiddleware(next http.Handler) http.Handler {
+func (a *API) AuthHttpMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		session, err := a.users.GetSession(context.Background(), r.Header.Get("Authorization"))

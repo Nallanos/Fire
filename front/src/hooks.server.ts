@@ -8,4 +8,5 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
         request.headers.set('Authorization', `${token}`);
     }
     return fetch(request);
+
 };

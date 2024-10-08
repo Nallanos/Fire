@@ -9,12 +9,18 @@
   href={"/apps/" + app.id}
   class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6"
 >
-  <div class="flex items-center gap-2">
-    <div class="text-xl font-bold">{app.name}</div>
-    <div>
-      <StatusIcon {status} />
+  <div class="flex flex-col">
+    <div class="text-xl font-bold">
+      <div class="flex items-center gap-4">
+        <p>
+          {app.name}
+        </p>
+        <StatusIcon {status} />
+      </div>
     </div>
+    <p class="text-sm">{app.image}</p>
   </div>
+
   <ul class="flex flex-col">
     <li class="flex gap-3">
       {app.id}

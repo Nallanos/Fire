@@ -7,8 +7,11 @@ import (
 	"github.com/nallanos/fire/internal/db"
 )
 
-func (c *ContainerService) ListApplicationDeployments(ctx context.Context, id string) ([]db.Deployment, error) {
-	deployments, err := c.db.ListApplicationDeployments(ctx, id)
+/*
+Return the list of deployment belonging to an applications
+*/
+func (c *ContainerService) ListApplicationDeployments(ctx context.Context, app_id string) ([]db.Deployment, error) {
+	deployments, err := c.db.ListApplicationDeployments(ctx, app_id)
 
 	if err != nil {
 		return deployments, fmt.Errorf("error listing application deployments: %w", err)

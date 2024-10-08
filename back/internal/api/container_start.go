@@ -10,15 +10,15 @@ import (
 )
 
 func (a *API) startContainer(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	app, err := a.apps.GetApplication(context.Background(), id)
+	app_id := chi.URLParam(r, "id")
+	app, err := a.apps.GetApplication(context.Background(), app_id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		InternalServerError(w, err)
 		return
 	}
-	deployment, err := a.deployments.GetLatestDeployment(context.Background(), id)
+	deployment, err := a.deployments.GetLatestDeployment(context.Background(), app_id)
 
 	if err != nil {
 		slog.Error(fmt.Sprintf("error getting latest deployment %v", err))

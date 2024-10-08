@@ -3,7 +3,7 @@
   import StatusIcon from "$lib/ui/StatusIcon.svelte";
   import DeploymentCard from "$lib/ui/ApplicationPage/DeploymentCard.svelte";
   import type { LayoutData } from "./$types";
-
+  import Button from "lib/components/ui/button/button.svelte";
   export let data: LayoutData;
   const app = data.app;
   let deploymentList: Deployment[] = data.deployments;
@@ -14,7 +14,7 @@
   let created_at: string = activeDeployment?.created_at;
 </script>
 
-<main class="grid gap-6 container mx-auto">
+<main class="grid gap-6 container mx-auto pt-4">
   {#if isActiveDeployment}
     <div
       class="bg-[#09090b] rounded-lg flex flex-col border border-gray-800 p-6 md:container md:mx-auto"
@@ -46,7 +46,7 @@
         </li>
       </ul>
       <div class="gap-6 flex pt-4">
-        <form method="POST" action="?/startContainer">
+        <form method="POST" action={`/apps/${app.id}?/startContainer`}>
           <button class="w-20 h-8 bg-white text-black rounded-md">Start</button>
         </form>
         <form method="POST" action="?/stopContainer">

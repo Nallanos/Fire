@@ -60,5 +60,9 @@ export const actions = {
       console.error(err);
       throw err;
     }
+  },
+  deleteCookies: ({ cookies }) => {
+    cookies.delete("token", { path: "/" })
+    redirect(300, "/apps")
   }
 };

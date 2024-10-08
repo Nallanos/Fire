@@ -2,17 +2,23 @@ version: '3'
 
 services:
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.1
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=benameurallan06@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
+      - "./letsencrypt:/letsencrypt"
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
@@ -40,13 +46,15 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`fire.allanbenameur.com`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+      - traefik.http.routers.frontend.tls=true
+      - traefik.http.routers.frontend.tls.certresolver=myresolver
     ports:
       - "3000:3000"
     depends_on:
       - backend
     environment:
-      - ORIGIN=http://fire.allanbenameur.com
+      - ORIGIN=https://fire.allanbenameur.com
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
